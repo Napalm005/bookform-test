@@ -10,7 +10,7 @@ function hasErrors(fieldsError) {
 
 class SignUp extends Component {
   state = {
-    confirmDirty: true
+    confirmDirty: false
   };
 
   componentDidMount() {
@@ -35,6 +35,14 @@ class SignUp extends Component {
     } else {
       callback();
     }
+  };
+
+  validateToNextPassword = (rule, value, callback) => {
+    const form = this.props.form;
+    if (value && this.state.confirmDirty) {
+      form.validateFields(['confirm'], { force: true });
+    }
+    callback();
   };
 
   handleConfirmBlur = (e) => {
@@ -82,7 +90,11 @@ class SignUp extends Component {
           help={passwordError || ''}
         >
           {getFieldDecorator('password', {
-            rules: [{ required: true, message: 'Введите пароль' }],
+            rules: [{
+              required: true, message: 'Введите пароль',
+            }, {
+              validator: this.validateToNextPassword,
+            }],
           })(
             <Input prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="Пароль" />
           )}
