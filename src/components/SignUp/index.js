@@ -10,7 +10,7 @@ function hasErrors(fieldsError) {
 
 class SignUp extends Component {
   state = {
-    confirmDirty: false
+    confirmDirty: true
   };
 
   componentDidMount() {
@@ -43,10 +43,20 @@ class SignUp extends Component {
   };
 
   render() {
-    const { getFieldDecorator, getFieldsError } = this.props.form;
+    const { getFieldDecorator, getFieldsError, getFieldError, isFieldTouched } = this.props.form;
+
+    // Only show error after a field is touched.
+    const emailError = isFieldTouched('email') && getFieldError('email');
+    const userNameError = isFieldTouched('userName') && getFieldError('userName');
+    const passwordError = isFieldTouched('password') && getFieldError('password');
+    const confirmError = isFieldTouched('confirm') && getFieldError('confirm');
+
     return (
       <Form onSubmit={this.handleSubmit} className="login-form container">
-        <FormItem>
+        <FormItem
+          validateStatus={emailError ? 'error' : ''}
+          help={emailError || ''}
+        >
           {getFieldDecorator('email', {
             rules: [{
               type: 'email', message: 'E-mail некорректный',
@@ -57,21 +67,30 @@ class SignUp extends Component {
             <Input prefix={<Icon type="mail" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="E-mail" />
           )}
         </FormItem>
-        <FormItem>
+        <FormItem
+          validateStatus={userNameError ? 'error' : ''}
+          help={userNameError || ''}
+        >
           {getFieldDecorator('userName', {
             rules: [{ required: true, message: 'Введите имя' }],
           })(
             <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="Имя" />
           )}
         </FormItem>
-        <FormItem>
+        <FormItem
+          validateStatus={passwordError ? 'error' : ''}
+          help={passwordError || ''}
+        >
           {getFieldDecorator('password', {
             rules: [{ required: true, message: 'Введите пароль' }],
           })(
             <Input prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="Пароль" />
           )}
         </FormItem>
-        <FormItem>
+        <FormItem
+          validateStatus={confirmError ? 'error' : ''}
+          help={confirmError || ''}
+        >
           {getFieldDecorator('confirm', {
             rules: [{
               required: true, message: 'Повторите пароль',

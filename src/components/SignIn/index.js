@@ -25,17 +25,27 @@ class SignIn extends Component {
   };
 
   render() {
-    const { getFieldDecorator, getFieldsError } = this.props.form;
+    const { getFieldDecorator, getFieldsError, getFieldError, isFieldTouched  } = this.props.form;
+
+    const userNameError = isFieldTouched('userName') && getFieldError('userName');
+    const passwordError = isFieldTouched('password') && getFieldError('password');
+
     return (
       <Form onSubmit={this.handleSubmit} className="login-form container">
-        <FormItem>
+        <FormItem
+          validateStatus={userNameError ? 'error' : ''}
+          help={userNameError || ''}
+        >
           {getFieldDecorator('userName', {
             rules: [{ required: true, message: 'Введите имя' }],
           })(
             <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="Имя" />
           )}
         </FormItem>
-        <FormItem>
+        <FormItem
+          validateStatus={passwordError ? 'error' : ''}
+          help={passwordError || ''}
+        >
           {getFieldDecorator('password', {
             rules: [{ required: true, message: 'Введите пароль' }],
           })(
